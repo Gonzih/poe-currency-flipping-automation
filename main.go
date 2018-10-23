@@ -107,10 +107,10 @@ func main() {
 }
 
 type SearchOffer struct {
-	SellValue    float64
+	SellAmount   float64
 	SellCurrency int64
 	SellName     string
-	BuyValue     float64
+	BuyAmount    float64
 	BuyCurrency  int64
 	BuyName      string
 	IGN          string
@@ -118,22 +118,47 @@ type SearchOffer struct {
 }
 
 func (of SearchOffer) String() string {
-	return fmt.Sprintf("%s %.0f <- %.0f %s (%.5f <- %.5f) (%.5f <- %.5f)", of.SellName, of.SellValue, of.BuyValue, of.BuyName,
-		of.SellValue/of.SellValue, of.BuyValue/of.SellValue,
-		of.SellValue/of.BuyValue, of.BuyValue/of.BuyValue)
+	return fmt.Sprintf("%s %.0f <- %.0f %s (%.5f <- %.5f) (%.5f <- %.5f)", of.SellName, of.SellAmount, of.BuyAmount, of.BuyName,
+		of.SellAmount/of.SellAmount, of.BuyAmount/of.SellAmount,
+		of.SellAmount/of.BuyAmount, of.BuyAmount/of.BuyAmount)
 }
 
-func NewSearchOffer(sValue, sName, bValue, bName, IGN, stock string) SearchOffer {
+func (of1 SearchOffer) IsCompatible(of2 SearchOffer) bool {
+	return of1.SellCurrency == of2.BuyCurrency && of1.BuyCurrency == of2.SellCurrency
+}
+
+func (of1 SearchOffer) IsProfitable(of2 SearchOffer) bool {
+	return of1.IsCompatible(of2) &&
+		of1.RateOf(of1.BuyName) < of2.RateOf(of1.BuyName)
+}
+
+func (of1 SearchOffer) Profit(of2 SearchOffer) float64 {
+	return of2.RateOf(of1.BuyName) - of1.RateOf(of1.BuyName)
+}
+
+func (of SearchOffer) RateOf(name string) float64 {
+	if name == of.BuyName {
+		return of.BuyAmount / of.SellAmount
+	}
+	if name == of.SellName {
+		return of.SellAmount / of.BuyAmount
+	}
+
+	log.Printf("Offer has no currency %s", name)
+	return 0.0
+}
+
+func NewSearchOffer(sAmount, sName, bAmount, bName, IGN, stock string) SearchOffer {
 	if stock == "" {
 		stock = "0"
 	}
 
 	return SearchOffer{
-		SellValue:    s2f(sValue),
+		SellAmount:   s2f(sAmount),
 		SellCurrency: currencyNames[sName],
 		SellName:     sName,
 
-		BuyValue:    s2f(bValue),
+		BuyAmount:   s2f(bAmount),
 		BuyCurrency: currencyNames[bName],
 		BuyName:     bName,
 
@@ -163,21 +188,20 @@ func searchFor(want, have string) []SearchOffer {
 	offers := make([]SearchOffer, 0)
 
 	document.Find("div.displayoffer").Each(func(index int, element *goquery.Selection) {
-		sellValue, _ := element.Attr("data-sellvalue")
+		sellAmount, _ := element.Attr("data-sellvalue")
 		sellCurrency, _ := element.Attr("data-sellcurrency")
 		sellName := lookupCurrencyByID(s2i(sellCurrency))
 
-		buyValue, _ := element.Attr("data-buyvalue")
+		buyAmount, _ := element.Attr("data-buyvalue")
 		buyCurrency, _ := element.Attr("data-buycurrency")
 		buyName := lookupCurrencyByID(s2i(buyCurrency))
 
 		ign, _ := element.Attr("data-ign")
 		stock, _ := element.Attr("data-stock")
-		// func NewSearchOffer(sValue, sCurrency, sName, bValue, bCurrency, bName, IGN, stock string) SearchOffer {
 
 		offer := NewSearchOffer(
-			sellValue, sellName,
-			buyValue, buyName,
+			sellAmount, sellName,
+			buyAmount, buyName,
 			ign, stock)
 		offers = append(offers, offer)
 	})
