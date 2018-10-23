@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"sort"
 )
 
 const (
@@ -25,17 +26,28 @@ func (p Pair) String() string {
 	return fmt.Sprintf("[%.0f %s <- %.0f %s] + [%.0f %s <- %.0f %s] = %f %s",
 		p.of1.SellAmount, p.of1.SellName, p.of1.BuyAmount, p.of1.BuyName,
 		p.of2.SellAmount, p.of2.SellName, p.of2.BuyAmount, p.of2.BuyName,
-		p.of1.Profit(p.of2), p.of1.BuyName,
+		p.Profit(), p.of1.BuyName,
 	)
+}
+
+func (p Pair) Profit() float64 {
+	return p.of1.Profit(p.of2)
 }
 
 func main() {
 	// currenciesToScan := []string{"alteration", "fusing", "jeweller's", "chrome", "gcp"}
 	online := true
-	highestProfit := 0.0
-	highestCurrency := ""
+
+	pairs := make([]Pair, 0)
 
 	for name := range currencyNames {
+		// for _, name := range currenciesToScan {
+		switch name {
+		case "wisdom", "chaos":
+			contunue
+		default:
+		}
+
 		offers1 := searchFor(online, "Delve", name, "chaos")
 		offers2 := searchFor(online, "Delve", "chaos", name)
 
@@ -43,16 +55,19 @@ func main() {
 			for _, offer2 := range offers2 {
 				if offer1.IsProfitable(offer2) {
 					p := Pair{of1: offer1, of2: offer2}
-					prof := p.of1.Profit(p.of2)
-					if prof > highestProfit {
-						highestProfit = prof
-						highestCurrency = name
-					}
-					log.Println(p.String())
+					// log.Println(p.String())
+					pairs = append(pairs, p)
 				}
 			}
 		}
 	}
 
-	log.Printf("Highest profit was with \"%s\" of %f chaos", highestCurrency, highestProfit)
+	sort.Slice(pairs, func(i, j int) bool { return pairs[i].Profit() > pairs[j].Profit() })
+
+	for i := 0; i < 15; i++ {
+		if i > len(pairs) {
+			break
+		}
+		log.Println(pairs[i].String())
+	}
 }
