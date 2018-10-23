@@ -17,9 +17,16 @@ type SearchOffer struct {
 }
 
 func (of SearchOffer) String() string {
-	return fmt.Sprintf("%s %.0f <- %.0f %s (%.5f <- %.5f) (%.5f <- %.5f)", of.SellName, of.SellAmount, of.BuyAmount, of.BuyName,
-		of.SellAmount/of.SellAmount, of.BuyAmount/of.SellAmount,
-		of.SellAmount/of.BuyAmount, of.BuyAmount/of.BuyAmount)
+	return fmt.Sprintf("[%.0f %s <- %.0f %s]",
+		of.SellAmount, of.SellName, of.BuyAmount, of.BuyName)
+}
+func (of SearchOffer) ToMessage(league string) string {
+	if league == "" {
+		league = "Standard"
+	}
+
+	return fmt.Sprintf("@%s Hi, I'd like to buy your %.0f %s for my %.0f %s in %s.",
+		of.IGN, of.SellAmount, of.SellName, of.BuyAmount, of.BuyName, league)
 }
 
 func (of1 SearchOffer) IsCompatible(of2 SearchOffer) bool {
