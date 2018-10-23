@@ -7,7 +7,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-func searchFor(want, have string) []SearchOffer {
+func searchFor(online bool, league, want, have string) []SearchOffer {
 	wantID, ok := currencyNames[want]
 	if !ok {
 		log.Fatalf("Unknown currency: %s", want)
@@ -18,7 +18,12 @@ func searchFor(want, have string) []SearchOffer {
 		log.Fatalf("Unknown currency: %s", have)
 	}
 
-	url := fmt.Sprintf(currencySearchTemplate, wantID, haveID)
+	onlineFilter := ""
+	if online {
+		onlineFilter = "x"
+	}
+
+	url := fmt.Sprintf(currencySearchTemplate, league, onlineFilter, wantID, haveID)
 	reader, err := GET(url)
 	must(err)
 	defer reader.Close()

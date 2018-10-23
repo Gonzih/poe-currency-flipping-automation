@@ -6,7 +6,7 @@ import (
 
 const (
 	currencyListURL        = "http://currency.poe.trade/"
-	currencySearchTemplate = "http://currency.poe.trade/search?league=Delve&online=x&stock=&want=%d&have=%d"
+	currencySearchTemplate = "http://currency.poe.trade/search?league=%s&online=%s&stock=&want=%d&have=%d"
 )
 
 func must(err error) {
@@ -23,8 +23,8 @@ type Pair struct {
 func main() {
 	log.Println(currencyNames)
 
-	offers1 := searchFor("fusing", "chaos")
-	offers2 := searchFor("chaos", "fusing")
+	offers1 := searchFor(true, "Delve", "fusing", "chaos")
+	offers2 := searchFor(true, "Delve", "chaos", "fusing")
 
 	for _, offer1 := range offers1 {
 		for _, offer2 := range offers2 {
