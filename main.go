@@ -64,7 +64,7 @@ func main() {
 
 	sort.Slice(pairs, func(i, j int) bool { return pairs[i].Profit() > pairs[j].Profit() })
 
-	for i := 0; i < 15; i++ {
+	for i := 0; i < 30; i++ {
 		if i > len(pairs) {
 			break
 		}

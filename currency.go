@@ -1,12 +1,38 @@
 package main
 
 import (
+	"encoding/gob"
 	"log"
+	"os"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
+const cacheFilePath = "/tmp/poe-currencies.bin"
+
 var currencyNames map[string]int64
+
+func saveCurrencyTable() error {
+	file, err := os.Create(cacheFilePath)
+	defer file.Close()
+	if err != nil {
+		return err
+	}
+
+	enc := gob.NewEncoder(file)
+	return enc.Encode(currencyNames)
+}
+
+func loadCurrencyTable() error {
+	file, err := os.Open(cacheFilePath)
+	defer file.Close()
+	if err != nil {
+		return err
+	}
+
+	dec := gob.NewDecoder(file)
+	return dec.Decode(&currencyNames)
+}
 
 func lookupCurrencyByName(name string) int64 {
 	id, ok := currencyNames[name]
@@ -43,5 +69,12 @@ func initCurrencyNames() {
 }
 
 func init() {
-	initCurrencyNames()
+	err := loadCurrencyTable()
+	if err != nil {
+		initCurrencyNames()
+		err = saveCurrencyTable()
+		if err != nil {
+			log.Fatalf("Error saving currency table: %s", err)
+		}
+	}
 }
