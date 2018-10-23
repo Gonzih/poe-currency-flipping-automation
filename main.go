@@ -44,7 +44,7 @@ func main() {
 		// for _, name := range currenciesToScan {
 		switch name {
 		case "wisdom", "chaos":
-			contunue
+			continue
 		default:
 		}
 
