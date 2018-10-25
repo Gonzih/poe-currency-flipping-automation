@@ -18,8 +18,6 @@ var rootCmd = &cobra.Command{
 var scanCmd = &cobra.Command{
 	Use: "scan",
 	Run: func(cmd *cobra.Command, args []string) {
-		online := true
-
 		pairs := make([]Pair, 0)
 
 		if len(currenciesToScan) == 0 {
@@ -35,8 +33,8 @@ var scanCmd = &cobra.Command{
 			default:
 			}
 
-			offers1 := searchFor(online, "Delve", name, "chaos")
-			offers2 := searchFor(online, "Delve", "chaos", name)
+			offers1 := searchFor(onlineSearch, "Delve", name, "chaos")
+			offers2 := searchFor(onlineSearch, "Delve", "chaos", name)
 
 			for _, offer1 := range offers1 {
 				p := Pair{of: offer1, ofs: make([]SearchOffer, 0)}
@@ -73,10 +71,14 @@ var listCmd = &cobra.Command{
 	},
 }
 
-var currenciesToScan []string
+var (
+	currenciesToScan []string
+	onlineSearch     bool
+)
 
 func init() {
 	rootCmd.PersistentFlags().StringArrayVar(&currenciesToScan, "currencies", []string{}, "Currencies to scan")
+	rootCmd.PersistentFlags().BoolVar(&onlineSearch, "online", true, "Perform online only search")
 
 	rootCmd.AddCommand(scanCmd, listCmd)
 }

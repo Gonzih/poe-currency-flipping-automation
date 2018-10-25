@@ -17,8 +17,8 @@ type SearchOffer struct {
 }
 
 func (of SearchOffer) String() string {
-	return fmt.Sprintf("[%.0f %s <- %.0f %s]",
-		of.SellAmount, of.SellName, of.BuyAmount, of.BuyName)
+	return fmt.Sprintf("[%.0f %s <- %.0f %s] by %s",
+		of.SellAmount, of.SellName, of.BuyAmount, of.BuyName, of.IGN)
 }
 func (of SearchOffer) ToMessage(league string) string {
 	if league == "" {
