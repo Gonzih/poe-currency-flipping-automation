@@ -1,7 +1,7 @@
 .PHONY: clean, test, run
 
 run: main
-	./main --currencies exalted scan
+	./main --currencies exalted ui
 
 clean:
 	rm -f main
