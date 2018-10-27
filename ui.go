@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/marcusolsson/tui-go"
 )
@@ -81,6 +83,10 @@ func renderUI() {
 	comment.SetBorder(true)
 
 	reloadState()
+	if len(state.pairs) == 0 {
+		log.Println("No results found")
+		os.Exit(1)
+	}
 
 	leftList := tui.NewList()
 	left.Append(leftList)
