@@ -19,8 +19,8 @@ func getPairs() []Pair {
 		default:
 		}
 
-		offers1 := searchFor(onlineSearch, "Delve", name, "chaos")
-		offers2 := searchFor(onlineSearch, "Delve", "chaos", name)
+		offers1 := searchFor(onlineSearch, leagueToSearch, name, "chaos")
+		offers2 := searchFor(onlineSearch, leagueToSearch, "chaos", name)
 
 		for _, offer1 := range offers1 {
 			p := Pair{of: offer1, ofs: make([]SearchOffer, 0)}

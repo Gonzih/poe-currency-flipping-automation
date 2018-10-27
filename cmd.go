@@ -47,11 +47,13 @@ var listCmd = &cobra.Command{
 var (
 	currenciesToScan []string
 	onlineSearch     bool
+	leagueToSearch   string
 )
 
 func init() {
 	rootCmd.PersistentFlags().StringArrayVar(&currenciesToScan, "currencies", []string{}, "Currencies to scan")
 	rootCmd.PersistentFlags().BoolVar(&onlineSearch, "online", true, "Perform online only search")
+	rootCmd.PersistentFlags().StringVar(&leagueToSearch, "league", "Delve", "Which league to use for search")
 
 	rootCmd.AddCommand(scanCmd, listCmd, uiCmd)
 }
