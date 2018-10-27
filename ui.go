@@ -63,6 +63,10 @@ func drawCommentPanel(list *tui.List) {
 func reloadState() {
 	state.Reset()
 	state.pairs = getPairs()
+	if len(state.pairs) == 0 {
+		log.Println("No results found")
+		os.Exit(1)
+	}
 }
 
 func renderUI() {
@@ -83,10 +87,6 @@ func renderUI() {
 	comment.SetBorder(true)
 
 	reloadState()
-	if len(state.pairs) == 0 {
-		log.Println("No results found")
-		os.Exit(1)
-	}
 
 	leftList := tui.NewList()
 	left.Append(leftList)
