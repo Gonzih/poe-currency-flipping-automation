@@ -1,7 +1,7 @@
 .PHONY: clean, test, run
 
 run: main
-	./main --currencies exalted ui
+	./main --currencies exalted --league Delve ui
 
 clean:
 	rm -f main

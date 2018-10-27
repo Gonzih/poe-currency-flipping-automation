@@ -19,6 +19,12 @@ type UIState struct {
 	pairs        []Pair
 }
 
+func (state UIState) Reset() {
+	state.focusedPanel = 0
+	state.leftPanelID = 0
+	state.rightPanelID = 0
+}
+
 var state = UIState{}
 
 func drawLeftPanel(list *tui.List) {
@@ -52,7 +58,13 @@ func drawCommentPanel(list *tui.List) {
 	)
 }
 
+func reloadState() {
+	state.Reset()
+	state.pairs = getPairs()
+}
+
 func renderUI() {
+	status := tui.NewLabel("Ready")
 	root := tui.NewVBox()
 	main := tui.NewHBox()
 	left := tui.NewVBox()
@@ -61,13 +73,14 @@ func renderUI() {
 
 	root.Append(main)
 	root.Append(comment)
+	root.Append(status)
 	main.Append(left)
 	main.Append(right)
 	left.SetBorder(true)
 	right.SetBorder(true)
 	comment.SetBorder(true)
 
-	state.pairs = getPairs()
+	reloadState()
 
 	leftList := tui.NewList()
 	left.Append(leftList)
@@ -108,6 +121,15 @@ func renderUI() {
 	ui.SetKeybinding("Down", func() {
 		adjustIDs(1)
 
+		drawLeftPanel(leftList)
+		drawRightPanel(rightList)
+		drawCommentPanel(comments)
+	})
+
+	ui.SetKeybinding("r", func() {
+		status.SetText("Reloading")
+		reloadState()
+		status.SetText("")
 		drawLeftPanel(leftList)
 		drawRightPanel(rightList)
 		drawCommentPanel(comments)
