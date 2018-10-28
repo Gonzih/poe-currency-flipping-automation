@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/marcusolsson/tui-go"
+	tui "github.com/marcusolsson/tui-go"
 )
 
 const (
@@ -52,11 +52,12 @@ func drawRightPanel(list *tui.List) {
 
 func drawCommentPanel(list *tui.List) {
 	list.RemoveItems()
+	t := "    %s"
 
 	list.AddItems(
-		state.pairs[state.leftPanelID].of.ToMessage(leagueToSearch),
+		fmt.Sprintf(t, state.pairs[state.leftPanelID].of.ToMessage(leagueToSearch)),
 		"",
-		state.pairs[state.leftPanelID].ofs[state.rightPanelID].ToMessage(leagueToSearch),
+		fmt.Sprintf(t, state.pairs[state.leftPanelID].ofs[state.rightPanelID].ToMessage(leagueToSearch)),
 	)
 }
 
@@ -70,7 +71,6 @@ func reloadState() {
 }
 
 func renderUI() {
-	status := tui.NewLabel("Ready")
 	root := tui.NewVBox()
 	main := tui.NewHBox()
 	left := tui.NewVBox()
@@ -79,7 +79,6 @@ func renderUI() {
 
 	root.Append(main)
 	root.Append(comment)
-	root.Append(status)
 	main.Append(left)
 	main.Append(right)
 	left.SetBorder(true)
@@ -134,9 +133,7 @@ func renderUI() {
 	})
 
 	ui.SetKeybinding("r", func() {
-		status.SetText("Reloading")
 		reloadState()
-		status.SetText("")
 		drawLeftPanel(leftList)
 		drawRightPanel(rightList)
 		drawCommentPanel(comments)
