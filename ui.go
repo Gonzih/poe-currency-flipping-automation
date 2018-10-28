@@ -109,8 +109,7 @@ func renderUI() {
 		}
 	}
 
-	ui, err := tui.New(root)
-	must(err)
+	ui := tui.New(root)
 	ui.SetKeybinding("Esc", func() { ui.Quit() })
 	ui.SetKeybinding("q", func() { ui.Quit() })
 	ui.SetKeybinding("Enter", focusFN)
