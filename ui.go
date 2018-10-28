@@ -109,7 +109,8 @@ func renderUI() {
 		}
 	}
 
-	ui := tui.New(root)
+	ui, err := tui.New(root)
+	must(err)
 	ui.SetKeybinding("Esc", func() { ui.Quit() })
 	ui.SetKeybinding("q", func() { ui.Quit() })
 	ui.SetKeybinding("Enter", focusFN)
@@ -141,9 +142,7 @@ func renderUI() {
 		drawCommentPanel(comments)
 	})
 
-	if err := ui.Run(); err != nil {
-		panic(err)
-	}
+	must(ui.Run())
 }
 
 func adjustIDs(direction int) {
