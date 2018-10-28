@@ -1,4 +1,4 @@
-module github.com/Gonzih/poe-flipping-automation
+module gitlab.com/Gonzih/poe-currency-flipping-automation
 
 require (
 	github.com/PuerkitoBio/goquery v1.4.1
